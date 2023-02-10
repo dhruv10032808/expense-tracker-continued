@@ -1,19 +1,16 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {Link, useNavigate} from 'react-router-dom'
-import AuthContext from '../../store/AuthContextProvider';
+import { useDispatch } from "react-redux";
+import { authActions } from '../../store/auth';
 import classes from './AuthForm.module.css'
 const AuthForm=()=>{
-    const authCtx=useContext(AuthContext);
-    const initialToken=localStorage.getItem('token')
+    const dispatch = useDispatch();
     const navigate=useNavigate();
-    const [token,setToken]=useState(initialToken)
     const[isLogin,setIsLogin]=useState(true);
    const emailInputRef=useRef('');
    const passwordInputRef=useRef('');
    const confirmPasswordInputRef=useRef('');
-   if(token){
-    navigate('/home')
-   }
+   
    const authHandler=()=>{
     setIsLogin((prev)=>!prev);
    }
@@ -46,10 +43,14 @@ const AuthForm=()=>{
         if(res.ok){
             return res.json().then((data)=>{
                 console.log(data);
-                setIsLogin(true);
-                setToken(data.idToken);
-                localStorage.setItem('token',data.idToken)
-                authCtx.login(data.idToken,data.email);
+                if (isLogin) {
+                    dispatch(authActions.login(data.idToken))
+                    localStorage.setItem("token", data.idToken);
+                    localStorage.setItem("email", emailInputRef.current.value)
+                    navigate('/home');
+                    return;
+                  }
+                  setIsLogin(true);
             })
         }else{
             return res.json().then((data)=>{
@@ -71,7 +72,7 @@ const AuthForm=()=>{
    <input type="password" id="confirmPassword" ref={confirmPasswordInputRef} required></input></div>}
    <button type="submit" className={classes.actions}>{isLogin?'Login':'Sign up'}</button>
    <button type="submit" onClick={authHandler}>{!isLogin?'Have an account?Login':"Don't have an account?Sign up"}</button><br></br>
-   <Link to='/forgotpassword'><span>Forgot Password?</span></Link>
+   {isLogin && <Link to='/forgotpassword'><span>Forgot Password?</span></Link>}
    </form>)
 }
 export default AuthForm;

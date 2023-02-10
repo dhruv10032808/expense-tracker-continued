@@ -1,15 +1,15 @@
-import React, { useContext, useRef,useEffect, useState } from "react";
-import AuthContext from "../../store/AuthContextProvider";
+import React, { useRef,useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 const UserProfileForm=()=>{
     const[preFillData,setPreFillData]=useState([])
-    const authCtx=useContext(AuthContext);
    const nameInputRef= useRef('');
    const photoUrlRef=useRef('');
+   const token = useSelector((state) => state.auth.token);
    const fillProfile=()=>{
     fetch('https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyBHg6kh04-hUMuA19EUhRG4RuusNO4taTU',{
         method:'POST',
         body:JSON.stringify({
-            idToken:authCtx.idToken
+            idToken:token
         }),
         headers:{
             'Content-Type':'application/json'
@@ -28,11 +28,10 @@ const UserProfileForm=()=>{
    },[])
    const submitHandler=(event)=>{
     event.preventDefault();
-    console.log(authCtx.idToken)
     fetch('https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyBHg6kh04-hUMuA19EUhRG4RuusNO4taTU',{
         method:'POST',
         body:JSON.stringify({
-          idToken:authCtx.idToken,
+          idToken:token,
           displayName: nameInputRef.current.value,
           photoUrl: photoUrlRef.current.value,
           returnSecureToken: true,
@@ -49,7 +48,7 @@ const UserProfileForm=()=>{
         }else{
             return res.json().then((data)=>{
                 alert('Could not update profile')
-                console.log(authCtx.idToken)
+                
             })
         }
     })

@@ -1,18 +1,20 @@
-import React, { useContext, useState } from "react";
+import React, {  useState } from "react";
 import {Link} from 'react-router-dom';
 import UserProfileForm from "./UserProfileForm";
 import classes from './Home.module.css'
-import AuthContext from "../../store/AuthContextProvider";
+import { useDispatch } from "react-redux";
 import ExpenseForm from "../Expense/ExpenseForm";
-
+import { authActions } from "../../store/auth";
 const HomePage=()=>{
-const authCtx=useContext(AuthContext)
+const dispatch=useDispatch();
 const[showForm,setShowForm]=useState(false)
 const showFormHandler=()=>{
     setShowForm(true);
 }
 const logoutHandler=()=>{
-    authCtx.logout();
+    localStorage.removeItem("token");
+    localStorage.removeItem("email")
+    dispatch(authActions.logout())
 }
 return(<><div className={classes.section}><h1>Welcome to Expense Tracker</h1>
 {<Link to='/emailverification'><button>Verify Email id</button></Link>}<br></br>
