@@ -2,7 +2,7 @@ import React,{useState,useEffect} from "react";
 import { useSelector,useDispatch } from 'react-redux';
 import ExpenseItemShow from "./ExpenseItemShow";
 import { expenseActions } from "../../store/expense";
-const ExpenseItem=()=>{
+const ExpenseItem=(props)=>{
   const dispatch=useDispatch();
     const [premiumBtn, setPremiumBtn] = useState(false);
     const listOfItems = useSelector(state=>state.expense.expenseItems)
@@ -13,7 +13,7 @@ const ExpenseItem=()=>{
      }
     }, [amount]);
 const expenses=listOfItems.map((expense)=>{
-    return (<ExpenseItemShow amount={expense.amount} description={expense.description} category={expense.category} id={expense.id} />)
+    return (<ExpenseItemShow getExpense={props.getExpense} amount={expense.amount} description={expense.description} category={expense.category} id={expense.id} />)
 })
 const activatePremiumHandler=(event)=>{
   event.preventDefault();

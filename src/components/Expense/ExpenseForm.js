@@ -95,7 +95,7 @@ catch(err){
           </select>
         </div>
         <button type="submit" style={{textAlign:'center'}}>Add Expense</button>
-        <ExpenseItem />
+        <ExpenseItem getExpense={getExpenseFromDB}/>
       </form>
     </>
   );

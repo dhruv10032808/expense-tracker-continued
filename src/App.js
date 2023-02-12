@@ -1,5 +1,5 @@
 import React,{useEffect} from 'react';
-import { Link,Route,Routes } from 'react-router-dom';
+import { Route,Routes } from 'react-router-dom';
 import { CSVLink } from 'react-csv';
 import AuthForm from './components/Auth/AuthForm';
 import EmailVerification from './components/pages/EmailVerification';
@@ -38,7 +38,7 @@ function App() {
   const isLoggedIn=!!token;
   return <>
   <Routes>
-  {!isLoggedIn && <Route path='/' exact element={<AuthForm />}></Route>}
+  {<Route path='/' exact element={<AuthForm />}></Route>}
   {isLoggedIn && <Route path='/home' exact element={<HomePage/>}></Route>}
   {isLoggedIn && <Route path='/emailverification' exact element={<EmailVerification/>}></Route>}
   {<Route path='/forgotpassword' exact element={<ForgotPassword/>}></Route>}
