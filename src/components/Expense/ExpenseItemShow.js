@@ -1,9 +1,12 @@
 import React from "react";
-
+import { useSelector } from "react-redux";
 const ExpenseItemShow=(props)=>{
+    const email=useSelector((state)=>state.auth.email)
+    const emailIdString = email.toString();
+    const emailId=emailIdString.replace(/[@.]/gi, '')
     const deleteExpenseHandler=(event)=>{
         event.preventDefault();
-        fetch(`https://expense-tracker-812e8-default-rtdb.firebaseio.com/expenses/${props.id}.json`,{
+        fetch(`https://expense-tracker-812e8-default-rtdb.firebaseio.com/${emailId}/${props.id}.json`,{
             method:'DELETE',
             headers:{
                 'Content-Type':'application/json'
@@ -17,7 +20,7 @@ const ExpenseItemShow=(props)=>{
     }
     const editExpenseHandler=(e)=>{
         e.preventDefault();
-        fetch(`https://expense-tracker-812e8-default-rtdb.firebaseio.com/expenses/${props.id}.json`,{
+        fetch(`https://expense-tracker-812e8-default-rtdb.firebaseio.com/${emailId}/${props.id}.json`,{
             method:'DELETE',
             headers:{
                 'Content-Type':'application/json'
@@ -25,6 +28,9 @@ const ExpenseItemShow=(props)=>{
         }).then((res)=>{
             return res.json().then((data)=>{
                 console.log("Expense successfuly deleted");
+                document.getElementById('amount').value=props.amount
+                document.getElementById('description').value=props.description
+                document.getElementById('category').value=props.category
                 props.getExpense();
             })
         })

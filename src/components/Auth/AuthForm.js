@@ -44,7 +44,10 @@ const AuthForm=()=>{
             return res.json().then((data)=>{
                 console.log(data);
                 if (isLogin) {
-                    dispatch(authActions.login(data.idToken))
+                    dispatch(authActions.login({
+                       token: data.idToken,
+                       email:emailInputRef.current.value
+                    }))
                     localStorage.setItem("token", data.idToken);
                     localStorage.setItem("email", emailInputRef.current.value)
                     navigate('/home');

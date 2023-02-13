@@ -1,10 +1,13 @@
 import React, { useRef ,useEffect} from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import { expenseActions } from "../../store/expense";
 import classes from "./ExpenseForm.module.css";
 import ExpenseItem from "./ExpenseItem";
 
 const ExpenseForm = () => {
+  const email=useSelector((state)=>state.auth.email)
+    const emailIdString = email.toString();
+    const emailId=emailIdString.replace(/[@.]/gi, '')
   const dispatch=useDispatch();
   const amountRef = useRef();
   const descriptionRef = useRef();
@@ -12,7 +15,7 @@ const ExpenseForm = () => {
 
   async function getExpenseFromDB(){
     try{
-    const response=await fetch('https://expense-tracker-812e8-default-rtdb.firebaseio.com/expenses.json');
+    const response=await fetch(`https://expense-tracker-812e8-default-rtdb.firebaseio.com/${emailId}.json`);
     if(!response.ok){
       throw new Error('something went wrong')
     }
@@ -43,7 +46,7 @@ useEffect(()=>{
 },[])
   async function addExpenseToDB(item){
     try{
-    const response =await fetch('https://expense-tracker-812e8-default-rtdb.firebaseio.com/expenses.json',{
+    const response =await fetch(`https://expense-tracker-812e8-default-rtdb.firebaseio.com/${emailId}.json`,{
         method:'POST',
         body:JSON.stringify(item),
         headers:{
@@ -78,15 +81,15 @@ catch(err){
       <form onSubmit={expenseSubmitHandler} className={classes.form}>
         <div>
           <label>Amount</label>
-          <input type="number" ref={amountRef} />
+          <input type="number" ref={amountRef} id='amount'/>
         </div>
         <div>
           <label>Description</label>
-          <input type="text" ref={descriptionRef} />
+          <input type="text" ref={descriptionRef} id='description'/>
         </div>
         <div>
           <label>Category</label>
-          <select ref={categoryRef}>
+          <select ref={categoryRef} id='category'>
             <option value="food">Food</option>
             <option value="travelling">Travelling</option>
             <option value="shopping">Shopping</option>
